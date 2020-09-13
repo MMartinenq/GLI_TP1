@@ -1,9 +1,12 @@
-package fr.istic.mmartinenq;
+package fr.istic.mmartinenq.model;
+
+import fr.istic.mmartinenq.view.CamembertView;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 
+//TODO: handle notify()
 public class CamembertModel extends Observable implements ICamembertModel {
 
     private String title;
@@ -72,13 +75,14 @@ public class CamembertModel extends Observable implements ICamembertModel {
 
     @Override
     public void addObserver(CamembertView camembertView) {
-        this.addObserver(camembertView);
+        super.addObserver(camembertView);
     }
 
-//    public void addItem(String name, String description, double value) {
-//        this.itemList.add(new Item(name, description, value));
-//    }
-//
+    @Override
+    public void addItem(String name, String description, double value) {
+        this.itemList.add(new Item(name, description, value));
+    }
+
 //    public void removeItem(String name) {
 //        for (Item item : itemList) {
 //            if (item.getName().equals(name)) {

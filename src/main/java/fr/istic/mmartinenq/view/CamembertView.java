@@ -1,4 +1,7 @@
-package fr.istic.mmartinenq;
+package fr.istic.mmartinenq.view;
+
+import fr.istic.mmartinenq.controller.CamembertController;
+import fr.istic.mmartinenq.model.ICamembertModel;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -6,17 +9,9 @@ import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
-import java.awt.GridLayout;
 import java.awt.Image;
-import java.awt.LayoutManager;
-import java.awt.List;
-import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -25,7 +20,6 @@ import java.awt.font.LineBreakMeasurer;
 import java.awt.font.TextLayout;
 import java.awt.geom.Arc2D;
 import java.awt.geom.GeneralPath;
-import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.text.AttributedCharacterIterator;
@@ -34,18 +28,8 @@ import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 
-
-// this should actually implement an ICamembertView
 public class CamembertView extends JComponent implements ICamembertView, MouseListener,
         MouseMotionListener, Observer {
 
@@ -94,22 +78,16 @@ public class CamembertView extends JComponent implements ICamembertView, MouseLi
     public CamembertView(ICamembertModel m) { //TODO: remplacer par interface (original = CamambertModel)
         model = m;
         startingAngle = 0.0;
-
-        // reminder: we don't want the model to have an oberserver: use an adapter
+        // TODO: we don't want the model to have an oberserver: use an adapter
         model.addObserver(this);
-
         arcs = new ArrayList<Arc2D>();
         selectedArcs = new ArrayList<Arc2D>();
-
         setSize(600, 600);
-
         buildGraphics();
-
     }
 
     // build the Arc2D (the pieces of pie)
     public void buildGraphics() {
-
         // create previous button
         int x1Points[] = { 20, 40, 20 };
         int y1Points[] = { 25, 45, 45 };
@@ -119,7 +97,6 @@ public class CamembertView extends JComponent implements ICamembertView, MouseLi
         for (int index = 1; index < x1Points.length; index++) {
             previous.lineTo(x1Points[index], y1Points[index]);
         }
-        ;
 
         previous.closePath();
 
@@ -132,7 +109,6 @@ public class CamembertView extends JComponent implements ICamembertView, MouseLi
         for (int index = 1; index < x1Points.length; index++) {
             next.lineTo(x1PointsN[index], y1PointsN[index]);
         }
-        ;
 
         next.closePath();
 
@@ -153,7 +129,6 @@ public class CamembertView extends JComponent implements ICamembertView, MouseLi
         selectedArcs.clear();
         angle = startingAngle;
         for (int i = 0; i < model.size(); i++) {
-
             Arc2D arc = new Arc2D.Double(pieCenter.getX()
                     - selectedPieSize.width / 2, pieCenter.getY()
                     - selectedPieSize.height / 2, selectedPieSize.width,
@@ -176,9 +151,9 @@ public class CamembertView extends JComponent implements ICamembertView, MouseLi
 
         fontCenter = new Font("Arial", Font.BOLD, 14);
         fontTags = new Font("Serial", Font.PLAIN, 12);
-
     }
 
+    @Override
     public void setController(CamembertController c) {
         controller = c;
     }
@@ -197,7 +172,6 @@ public class CamembertView extends JComponent implements ICamembertView, MouseLi
                 % model.size());
         System.out.println("Selected pie" + controller.getSelectedPie());
         paint(getGraphics());
-
     }
 
     // select the previous piece of pie
@@ -206,7 +180,6 @@ public class CamembertView extends JComponent implements ICamembertView, MouseLi
         controller.setSelectedPie((controller.getSelectedPie() - 1)
                 % model.size());
         System.out.println("Selected pie" + controller.getSelectedPie());
-
         paint(getGraphics());
     }
 
@@ -220,15 +193,12 @@ public class CamembertView extends JComponent implements ICamembertView, MouseLi
     }
 
     private void drawPreviousNextButtons(Graphics2D g2d) {
-
         g2d.setColor(Color.RED);
         g2d.fill(previous);
         g2d.fill(next);
-
     }
 
     public double positionXOnCircle(double radius, double angle) {
-
         return radius * Math.cos(angle * Math.PI / 180.0);
     }
 
@@ -263,13 +233,11 @@ public class CamembertView extends JComponent implements ICamembertView, MouseLi
         g2d.fill(rect2D);
 
         if (controller.isSelected()) {
-
             drawPreviousNextButtons(g2d);
         }
 
         double angle = startingAngle;
         for (int i = 0; i < model.size(); i++) {
-
             if (controller.isSelected() && controller.getSelectedPie() == i) {
                 g2d.setColor(new Color(0, 100, (100 + 20 * i) % 255));
                 Arc2D arc = selectedArcs.get(i);
@@ -277,7 +245,6 @@ public class CamembertView extends JComponent implements ICamembertView, MouseLi
                 arc.setAngleExtent(model.getValues(i) / model.total() * 360
                         - pieRadialGap);
                 g2d.fill(arc);
-
                 // draw detailed information
             } else {
                 g2d.setColor(new Color(100, 100, (100 + 20 * i) % 255));
@@ -313,7 +280,6 @@ public class CamembertView extends JComponent implements ICamembertView, MouseLi
                 (int) pieCenter.getY() - fontTags.getSize() + 20);
         // draw tags
         if (!controller.isSelected()) {
-
             angle = startingAngle;
             for (int i = 0; i < model.size(); i++) {
 
@@ -446,9 +412,7 @@ public class CamembertView extends JComponent implements ICamembertView, MouseLi
 
                     }
                 }
-
                 angle += model.getValues(i) / model.total() * 360;
-
             }
         }
 
@@ -675,27 +639,22 @@ public class CamembertView extends JComponent implements ICamembertView, MouseLi
                         }
                     }
                 }
-
                 angle += model.getValues(i) / model.total() * 360;
             }
         }
 
         // Put the offscreen image on the screen.
         g.drawImage(offscreen, 0, 0, null);
-
     }
 
     public void computeRotation(int x, int y) {
         double dx = pieCenter.getX() - x;
         double dy = pieCenter.getY() - y;
         double angle1 = Math.atan2(dy, dx) / Math.PI * 180;
-
         dx = pieCenter.getX() - prevPosX;
         dy = pieCenter.getY() - prevPosY;
         double angle2 = Math.atan2(dy, dx) / Math.PI * 180;
-
         startingAngle += (angle2 - angle1);
-
         prevPosX = x;
         prevPosY = y;
     }
@@ -706,12 +665,9 @@ public class CamembertView extends JComponent implements ICamembertView, MouseLi
 
     @Override
     public void mouseClicked(MouseEvent arg0) {
-        // TODO Auto-generated method stub
-
         if (center.contains(arg0.getX(), arg0.getY())) {
             controller.deSelect();
         } else {
-
             for (int i = 0; i < arcs.size(); i++) {
                 if (arcs.get(i).contains(arg0.getX(), arg0.getY())
                         && !emptyCenter.contains(arg0.getX(), arg0.getY())) {
@@ -719,106 +675,56 @@ public class CamembertView extends JComponent implements ICamembertView, MouseLi
                 }
             }
         }
-
         if (previous.contains(arg0.getX(), arg0.getY())) {
             controller.nextPie();
         }
-
         if (next.contains(arg0.getX(), arg0.getY())) {
             controller.previousPie();
         }
-
     }
 
     @Override
     public void mouseEntered(MouseEvent arg0) {
-        // TODO Auto-generated method stub
-
     }
 
     @Override
     public void mouseExited(MouseEvent arg0) {
-        // TODO Auto-generated method stub
-
     }
 
     @Override
     public void mousePressed(MouseEvent arg0) {
-        // TODO Auto-generated method stub
         prevPosX = arg0.getX();
         prevPosY = arg0.getY();
-
     }
 
     @Override
     public void mouseReleased(MouseEvent arg0) {
-        // TODO Auto-generated method stub
-
     }
 
     // if the user drags a pie we rotate it by a given angle 'angle1'
     @Override
     public void mouseDragged(MouseEvent e) {
-        // TODO Auto-generated method stub
-
         // difference in x from center:
         double dx = pieCenter.getX() - e.getX();
         double dy = pieCenter.getY() - e.getY();
         double angle1 = Math.atan2(dy, dx) / Math.PI * 180;
-
         dx = pieCenter.getX() - prevPosX;
         dy = pieCenter.getY() - prevPosY;
         double angle2 = Math.atan2(dy, dx) / Math.PI * 180;
-
         startingAngle += (angle2 - angle1);
-
         prevPosX = e.getX();
         prevPosY = e.getY();
-
         repaint();
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        // TODO Auto-generated method stub
-
     }
 
     @Override
     public void update(Observable arg0, Object arg1) {
-        // TODO Auto-generated method stub
-
         buildGraphics();
         paint(getGraphics());
-
-    }
-
-
-    //TODO: this main method should actually be placed in another class (it's here just to avoid having multiple files)
-    public static void main(String[] a) {
-        JFrame window = new JFrame();
-        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        window.setBounds(30, 30, 400, 400);
-
-        // Create an instance of the model
-        // Model model;
-
-        // Maybe put some data in the model
-        int oldFirst = 0;
-        int oldLast = 0;
-
-        // Create the controller and the view and link all together
-
-
-        // display layout
-        GridLayout layout = new GridLayout(1, 2);
-
-        window.getContentPane().add(controller.getView());
-
-        window.setLayout(layout);
-        window.pack();
-        window.setVisible(true);
-        // window.pack();
     }
 
 }

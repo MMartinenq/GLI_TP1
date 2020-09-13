@@ -1,4 +1,4 @@
-package fr.istic.mmartinenq;
+package fr.istic.mmartinenq.model;
 
 public class Item {
 

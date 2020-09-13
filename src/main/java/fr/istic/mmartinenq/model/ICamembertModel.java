@@ -1,4 +1,6 @@
-package fr.istic.mmartinenq;
+package fr.istic.mmartinenq.model;
+
+import fr.istic.mmartinenq.view.CamembertView;
 
 public interface ICamembertModel {
 
@@ -17,5 +19,7 @@ public interface ICamembertModel {
     String getDescription(int i);
 
     void addObserver(CamembertView camembertView);
+
+    void addItem(String name, String description, double value);
 
 }
