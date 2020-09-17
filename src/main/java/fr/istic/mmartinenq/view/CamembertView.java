@@ -80,6 +80,7 @@ public class CamembertView extends JComponent implements ICamembertView, MouseLi
         startingAngle = 0.0;
         // TODO: we don't want the model to have an oberserver: use an adapter
         model.addObserver(this);
+        addMouseListener(this);
         arcs = new ArrayList<Arc2D>();
         selectedArcs = new ArrayList<Arc2D>();
         setSize(600, 600);
@@ -168,8 +169,7 @@ public class CamembertView extends JComponent implements ICamembertView, MouseLi
     // select the next piece of pie
     @Override
     public void nextPie() {
-        controller.setSelectedPie((controller.getSelectedPie() + 1)
-                % model.size());
+        controller.setSelectedPie((controller.getSelectedPie() + 1) % model.size());
         System.out.println("Selected pie" + controller.getSelectedPie());
         paint(getGraphics());
     }
@@ -177,8 +177,12 @@ public class CamembertView extends JComponent implements ICamembertView, MouseLi
     // select the previous piece of pie
     @Override
     public void previousPie() {
-        controller.setSelectedPie((controller.getSelectedPie() - 1)
-                % model.size());
+        int prevousPie = (controller.getSelectedPie() - 1) % model.size();
+        if (prevousPie < 0)
+            controller.setSelectedPie(model.size() - 1);
+        else
+            controller.setSelectedPie((controller.getSelectedPie() - 1) % model.size());
+//        controller.setSelectedPie((controller.getSelectedPie() - 1) % model.size());
         System.out.println("Selected pie" + controller.getSelectedPie());
         paint(getGraphics());
     }
@@ -659,10 +663,7 @@ public class CamembertView extends JComponent implements ICamembertView, MouseLi
         prevPosY = y;
     }
 
-
-
-    // if the user clicks on a pie, it gets selected, otherwise you deselect all.
-
+    // If the user clicks on a pie, it gets selected, otherwise you deselect all.
     @Override
     public void mouseClicked(MouseEvent arg0) {
         if (center.contains(arg0.getX(), arg0.getY())) {

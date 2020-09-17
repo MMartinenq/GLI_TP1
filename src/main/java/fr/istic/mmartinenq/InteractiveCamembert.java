@@ -38,7 +38,7 @@ public class InteractiveCamembert {
         window.getContentPane().add((CamembertView)controller.getView());
 
         window.setLayout(layout);
-//        window.pack();
+        window.pack();
         window.setVisible(true);
 //        window.pack();
     }

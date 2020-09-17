@@ -22,4 +22,6 @@ public interface ICamembertModel {
 
     void addItem(String name, String description, double value);
 
+    void removeItem(String title);
+
 }

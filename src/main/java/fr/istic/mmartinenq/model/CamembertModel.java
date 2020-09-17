@@ -26,6 +26,7 @@ public class CamembertModel extends Observable implements ICamembertModel {
 
     public void setTitle(String title) {
         this.title = title;
+        notifyObservers();
     }
 
     @Override
@@ -35,6 +36,7 @@ public class CamembertModel extends Observable implements ICamembertModel {
 
     public void setUnit(String unit) {
         this.unit = unit;
+        notifyObservers();
     }
 
     public List<Item> getItemList() {
@@ -43,6 +45,7 @@ public class CamembertModel extends Observable implements ICamembertModel {
 
     public void setItemList(List<Item> itemList) {
         this.itemList = itemList;
+        notifyObservers();
     }
 
     @Override
@@ -81,15 +84,18 @@ public class CamembertModel extends Observable implements ICamembertModel {
     @Override
     public void addItem(String name, String description, double value) {
         this.itemList.add(new Item(name, description, value));
+        notifyObservers();
     }
 
-//    public void removeItem(String name) {
-//        for (Item item : itemList) {
-//            if (item.getName().equals(name)) {
-//                itemList.remove(item);
-//                break;
-//            }
-//        }
-//    }
+    @Override
+    public void removeItem(String title) {
+        for (Item item : itemList) {
+            if (item.getTitle().equals(title)) {
+                itemList.remove(item);
+                break;
+            }
+        }
+        notifyObservers();
+    }
 
 }
