@@ -1,8 +1,9 @@
 package fr.istic.mmartinenq;
 
 import fr.istic.mmartinenq.controller.CamembertController;
-import fr.istic.mmartinenq.model.CamembertModel;
+import fr.istic.mmartinenq.model.CamembertModelAdapter;
 import fr.istic.mmartinenq.model.ICamembertModel;
+import fr.istic.mmartinenq.model.Item;
 import fr.istic.mmartinenq.view.CamembertView;
 import fr.istic.mmartinenq.view.ICamembertView;
 
@@ -19,14 +20,12 @@ public class InteractiveCamembert {
         window.setTitle("Interactive Camembert");
 
         // Create an instance of the model
-        ICamembertModel model = new CamembertModel("Budget", "€");
+        ICamembertModel model = new CamembertModelAdapter("Budget", "€");
 
         // Maybe put some data in the model
-//        int oldFirst = 0;
-//        int oldLast = 0;
-        model.addItem("Essence", "SP95 pour 206", 200);
-        model.addItem("Courses", "Achats alimentaires", 160);
-        model.addItem("Masques", "Masques pour présence en cours", 30);
+        model.addItem(new Item("Essence", "SP95 pour 206", 200));
+        model.addItem(new Item("Courses", "Achats alimentaires", 160));
+        model.addItem(new Item("Masques", "Masques pour présence en cours", 30));
 
         // Create the controller and the view and link all together
         ICamembertView view = new CamembertView(model);

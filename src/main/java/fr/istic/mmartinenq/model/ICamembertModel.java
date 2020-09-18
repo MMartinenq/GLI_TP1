@@ -1,6 +1,6 @@
 package fr.istic.mmartinenq.model;
 
-import fr.istic.mmartinenq.view.CamembertView;
+import java.beans.PropertyChangeListener;
 
 public interface ICamembertModel {
 
@@ -18,10 +18,10 @@ public interface ICamembertModel {
 
     String getDescription(int i);
 
-    void addObserver(CamembertView camembertView);
+    void addItem(Item item);
 
-    void addItem(String name, String description, double value);
+    void removeItem(int i);
 
-    void removeItem(String title);
+    void addPropertyChangeListener(PropertyChangeListener propertyChangeListener);
 
 }

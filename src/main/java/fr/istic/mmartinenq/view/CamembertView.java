@@ -22,16 +22,16 @@ import java.awt.geom.Arc2D;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
 import java.util.ArrayList;
-import java.util.Observable;
-import java.util.Observer;
 
 import javax.swing.JComponent;
 
 public class CamembertView extends JComponent implements ICamembertView, MouseListener,
-        MouseMotionListener, Observer {
+        MouseMotionListener, PropertyChangeListener {
 
     static final Point2D pieCenter = new Point2D.Double(300, 300);
     static final Dimension pieSize = new Dimension(300, 300);
@@ -64,6 +64,8 @@ public class CamembertView extends JComponent implements ICamembertView, MouseLi
 
     GeneralPath previous;
     GeneralPath next;
+    GeneralPath remove;
+    GeneralPath add;
 
     double prevPosX;
     double prevPosY;
@@ -75,14 +77,13 @@ public class CamembertView extends JComponent implements ICamembertView, MouseLi
     Font fontCenter;
     Font fontTags;
 
-    public CamembertView(ICamembertModel m) { //TODO: remplacer par interface (original = CamambertModel)
+    public CamembertView(ICamembertModel m) {
         model = m;
         startingAngle = 0.0;
-        // TODO: we don't want the model to have an oberserver: use an adapter
-        model.addObserver(this);
+        model.addPropertyChangeListener(this);
         addMouseListener(this);
-        arcs = new ArrayList<Arc2D>();
-        selectedArcs = new ArrayList<Arc2D>();
+        arcs = new ArrayList<>();
+        selectedArcs = new ArrayList<>();
         setSize(600, 600);
         buildGraphics();
     }
@@ -94,11 +95,9 @@ public class CamembertView extends JComponent implements ICamembertView, MouseLi
         int y1Points[] = { 25, 45, 45 };
         previous = new GeneralPath(GeneralPath.WIND_EVEN_ODD, x1Points.length);
         previous.moveTo(x1Points[0], y1Points[0]);
-
         for (int index = 1; index < x1Points.length; index++) {
             previous.lineTo(x1Points[index], y1Points[index]);
         }
-
         previous.closePath();
 
         // create next button
@@ -106,12 +105,30 @@ public class CamembertView extends JComponent implements ICamembertView, MouseLi
         int y1PointsN[] = { 20, 20, 40 };
         next = new GeneralPath(GeneralPath.WIND_EVEN_ODD, x1PointsN.length);
         next.moveTo(x1PointsN[0], y1PointsN[0]);
-
-        for (int index = 1; index < x1Points.length; index++) {
+        for (int index = 1; index < x1PointsN.length; index++) {
             next.lineTo(x1PointsN[index], y1PointsN[index]);
         }
-
         next.closePath();
+
+        // create remove button
+        int x1PointsR[] = { 60, 85, 85, 60 };
+        int y1PointsR[] = { 20, 20, 45, 45 };
+        remove = new GeneralPath(GeneralPath.WIND_EVEN_ODD, x1PointsR.length);
+        remove.moveTo(x1PointsR[0], y1PointsR[0]);
+        for (int index = 1; index < x1PointsR.length; index++) {
+            remove.lineTo(x1PointsR[index], y1PointsR[index]);
+        }
+        remove.closePath();
+
+        // create add button
+        int x1PointsA[] = { 100, 125, 125, 100 };
+        int y1PointsA[] = { 20, 20, 45, 45 };
+        add = new GeneralPath(GeneralPath.WIND_EVEN_ODD, x1PointsA.length);
+        add.moveTo(x1PointsA[0], y1PointsA[0]);
+        for (int index = 1; index < x1PointsA.length; index++) {
+            add.lineTo(x1PointsA[index], y1PointsA[index]);
+        }
+        add.closePath();
 
         // create non-selected arcs
         arcs.clear();
@@ -197,6 +214,16 @@ public class CamembertView extends JComponent implements ICamembertView, MouseLi
         g2d.fill(next);
     }
 
+    private void drawRemoveButton(Graphics2D g2d) {
+        g2d.setColor(Color.RED);
+        g2d.fill(remove);
+    }
+
+    private void drawAddButton(Graphics2D g2d) {
+        g2d.setColor(Color.GREEN);
+        g2d.fill(add);
+    }
+
     public double positionXOnCircle(double radius, double angle) {
         return radius * Math.cos(angle * Math.PI / 180.0);
     }
@@ -233,7 +260,10 @@ public class CamembertView extends JComponent implements ICamembertView, MouseLi
 
         if (controller.isSelected()) {
             drawPreviousNextButtons(g2d);
+            drawRemoveButton(g2d);
         }
+
+        drawAddButton(g2d);
 
         double angle = startingAngle;
         for (int i = 0; i < model.size(); i++) {
@@ -677,6 +707,9 @@ public class CamembertView extends JComponent implements ICamembertView, MouseLi
         if (next.contains(arg0.getX(), arg0.getY())) {
             controller.previousPie();
         }
+        if (remove.contains(arg0.getX(), arg0.getY())) {
+            controller.removePie(controller.getSelectedPie());
+        }
     }
 
     @Override
@@ -718,16 +751,9 @@ public class CamembertView extends JComponent implements ICamembertView, MouseLi
     }
 
     @Override
-    public void update(Observable arg0, Object arg1) {
+    public void propertyChange(PropertyChangeEvent evt) {
         buildGraphics();
         paint(getGraphics());
     }
-
-//    @Override
-//    public void propertyChange(PropertyChangeEvent evt) {
-//        buildGraphics();
-//        paint(getGraphics());
-//    }
-
 
 }

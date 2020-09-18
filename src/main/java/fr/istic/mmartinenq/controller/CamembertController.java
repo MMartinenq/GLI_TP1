@@ -66,4 +66,8 @@ public class CamembertController {
         view.previousPie();
     }
 
+    public void removePie(int i) {
+        model.removeItem(i);
+    }
+
 }
