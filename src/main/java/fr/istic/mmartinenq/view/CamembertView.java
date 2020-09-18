@@ -177,12 +177,7 @@ public class CamembertView extends JComponent implements ICamembertView, MouseLi
     // select the previous piece of pie
     @Override
     public void previousPie() {
-        int prevousPie = (controller.getSelectedPie() - 1) % model.size();
-        if (prevousPie < 0)
-            controller.setSelectedPie(model.size() - 1);
-        else
-            controller.setSelectedPie((controller.getSelectedPie() - 1) % model.size());
-//        controller.setSelectedPie((controller.getSelectedPie() - 1) % model.size());
+        controller.setSelectedPie((controller.getSelectedPie() + model.size() - 1) % model.size());
         System.out.println("Selected pie" + controller.getSelectedPie());
         paint(getGraphics());
     }
@@ -727,5 +722,12 @@ public class CamembertView extends JComponent implements ICamembertView, MouseLi
         buildGraphics();
         paint(getGraphics());
     }
+
+//    @Override
+//    public void propertyChange(PropertyChangeEvent evt) {
+//        buildGraphics();
+//        paint(getGraphics());
+//    }
+
 
 }
