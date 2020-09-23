@@ -26,6 +26,7 @@ public class InteractiveCamembert {
         model.addItem(new Item("Essence", "SP95 pour 206", 200));
         model.addItem(new Item("Courses", "Achats alimentaires", 160));
         model.addItem(new Item("Masques", "Masques pour présence en cours", 30));
+        model.addItem(new Item("Loisirs", "Sport, culture...", 50));
 
         // Create the controller and the view and link all together
         ICamembertView view = new CamembertView(model);

@@ -68,6 +68,7 @@ public class CamembertController {
 
     public void removePie(int i) {
         model.removeItem(i);
+        deSelect();
     }
 
 }

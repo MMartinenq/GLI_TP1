@@ -65,7 +65,6 @@ public class CamembertView extends JComponent implements ICamembertView, MouseLi
     GeneralPath previous;
     GeneralPath next;
     GeneralPath remove;
-    GeneralPath add;
 
     double prevPosX;
     double prevPosY;
@@ -119,16 +118,6 @@ public class CamembertView extends JComponent implements ICamembertView, MouseLi
             remove.lineTo(x1PointsR[index], y1PointsR[index]);
         }
         remove.closePath();
-
-        // create add button
-        int x1PointsA[] = { 100, 125, 125, 100 };
-        int y1PointsA[] = { 20, 20, 45, 45 };
-        add = new GeneralPath(GeneralPath.WIND_EVEN_ODD, x1PointsA.length);
-        add.moveTo(x1PointsA[0], y1PointsA[0]);
-        for (int index = 1; index < x1PointsA.length; index++) {
-            add.lineTo(x1PointsA[index], y1PointsA[index]);
-        }
-        add.closePath();
 
         // create non-selected arcs
         arcs.clear();
@@ -219,11 +208,6 @@ public class CamembertView extends JComponent implements ICamembertView, MouseLi
         g2d.fill(remove);
     }
 
-    private void drawAddButton(Graphics2D g2d) {
-        g2d.setColor(Color.GREEN);
-        g2d.fill(add);
-    }
-
     public double positionXOnCircle(double radius, double angle) {
         return radius * Math.cos(angle * Math.PI / 180.0);
     }
@@ -262,8 +246,6 @@ public class CamembertView extends JComponent implements ICamembertView, MouseLi
             drawPreviousNextButtons(g2d);
             drawRemoveButton(g2d);
         }
-
-        drawAddButton(g2d);
 
         double angle = startingAngle;
         for (int i = 0; i < model.size(); i++) {
@@ -707,7 +689,7 @@ public class CamembertView extends JComponent implements ICamembertView, MouseLi
         if (next.contains(arg0.getX(), arg0.getY())) {
             controller.previousPie();
         }
-        if (remove.contains(arg0.getX(), arg0.getY())) {
+        if (remove.contains(arg0.getX(), arg0.getY()) && controller.isSelected()) {
             controller.removePie(controller.getSelectedPie());
         }
     }
